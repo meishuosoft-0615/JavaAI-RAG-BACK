@@ -1,0 +1,213 @@
+openapi: 3.0.3
+info:
+  title: Enterprise RAG Platform API
+  version: 0.0.1
+servers:
+  - url: http://localhost:8080
+paths:
+  /api/auth/login:
+    post:
+      summary: 用户登录
+      tags:
+        - Auth
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - tenantCode
+                - username
+                - password
+              properties:
+                tenantCode:
+                  type: string
+                  example: demo
+                username:
+                  type: string
+                  example: admin
+                password:
+                  type: string
+                  example: admin123
+      responses:
+        "200":
+          description: 登录成功，返回 Bearer token
+  /api/auth/me:
+    get:
+      summary: 查询当前用户上下文
+      tags:
+        - Auth
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: 当前用户、租户、部门和角色上下文
+        "401":
+          description: 未登录或 token 无效
+  /api/kb/spaces:
+    post:
+      summary: 创建知识库空间
+      tags:
+        - KnowledgeBase
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+              properties:
+                name:
+                  type: string
+                  example: HR 制度知识库
+                description:
+                  type: string
+                  example: 面向员工的制度、流程和报销政策
+      responses:
+        "200":
+          description: 创建成功，创建者自动拥有 MANAGE 权限
+    get:
+      summary: 查询当前用户可见的知识库空间
+      tags:
+        - KnowledgeBase
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: keyword
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: pageNo
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 1
+        - name: pageSize
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 20
+      responses:
+        "200":
+          description: 只返回负责人或 ACL 命中的空间
+  /api/kb/spaces/{spaceId}:
+    get:
+      summary: 查询知识库空间详情
+      tags:
+        - KnowledgeBase
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: spaceId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: 空间详情
+        "404":
+          description: 不存在或当前用户不可见
+  /api/kb/spaces/{spaceId}/status:
+    patch:
+      summary: 启用或停用知识库空间
+      tags:
+        - KnowledgeBase
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: spaceId
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - status
+              properties:
+                status:
+                  type: string
+                  enum:
+                    - ENABLED
+                    - DISABLED
+      responses:
+        "200":
+          description: 状态更新成功
+        "403":
+          description: 无管理权限
+  /api/kb/spaces/{spaceId}/acl:
+    get:
+      summary: 查询知识库空间 ACL
+      tags:
+        - KnowledgeBase
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: spaceId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: ACL 列表
+    put:
+      summary: 替换知识库空间 ACL
+      tags:
+        - KnowledgeBase
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: spaceId
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - items
+              properties:
+                items:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      departmentId:
+                        type: integer
+                      roleId:
+                        type: integer
+                      userId:
+                        type: integer
+                      permission:
+                        type: string
+                        enum:
+                          - READ
+                          - MANAGE
+      responses:
+        "200":
+          description: ACL 替换成功，空间负责人会被保留为 MANAGE
+        "400":
+          description: 每条 ACL 必须且只能指定一个授权目标
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

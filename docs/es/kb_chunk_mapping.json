@@ -1,0 +1,62 @@
+{
+  "settings": {
+    "number_of_shards": 1,
+    "number_of_replicas": 0,
+    "analysis": {
+      "analyzer": {
+        "rag_text_analyzer": {
+          "type": "standard"
+        }
+      }
+    }
+  },
+  "mappings": {
+    "dynamic": "strict",
+    "_meta": {
+      "description": "RAG 文档切片索引，保存全文、向量和权限过滤元数据",
+      "fields": {
+        "tenantId": "租户 ID，检索阶段必须过滤",
+        "spaceId": "知识库空间 ID，限定问答所在空间",
+        "documentId": "来源文档 ID",
+        "documentVersion": "来源文档版本号，只检索生效版本",
+        "chunkId": "MySQL kb_chunk.id",
+        "chunkNo": "切片序号",
+        "title": "来源文档标题",
+        "sectionTitle": "来源章节标题",
+        "content": "切片原文内容，用于全文检索、向量检索和引用展示",
+        "pageNo": "来源页码",
+        "departmentIds": "允许访问该切片的部门 ID 列表",
+        "roleIds": "允许访问该切片的角色 ID 列表",
+        "userIds": "允许访问该切片的用户 ID 列表",
+        "status": "切片状态，ACTIVE 表示可检索",
+        "createdAt": "创建时间",
+        "updatedAt": "更新时间",
+        "embedding": "切片向量，维度必须与 Embedding 模型一致"
+      }
+    },
+    "properties": {
+      "tenantId": { "type": "long" },
+      "spaceId": { "type": "long" },
+      "documentId": { "type": "long" },
+      "documentVersion": { "type": "integer" },
+      "chunkId": { "type": "long" },
+      "chunkNo": { "type": "integer" },
+      "title": { "type": "text", "analyzer": "rag_text_analyzer", "fields": { "keyword": { "type": "keyword", "ignore_above": 256 } } },
+      "sectionTitle": { "type": "text", "analyzer": "rag_text_analyzer", "fields": { "keyword": { "type": "keyword", "ignore_above": 256 } } },
+      "content": { "type": "text", "analyzer": "rag_text_analyzer" },
+      "pageNo": { "type": "integer" },
+      "departmentIds": { "type": "long" },
+      "roleIds": { "type": "long" },
+      "userIds": { "type": "long" },
+      "status": { "type": "keyword" },
+      "createdAt": { "type": "date" },
+      "updatedAt": { "type": "date" },
+      "embedding": {
+        "type": "dense_vector",
+        "dims": 1536,
+        "index": true,
+        "similarity": "cosine"
+      }
+    }
+  }
+}

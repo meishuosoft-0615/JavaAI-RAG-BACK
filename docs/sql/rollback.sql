@@ -1,0 +1,22 @@
+USE enterprise_rag;
+
+DROP TABLE IF EXISTS eval_result;
+DROP TABLE IF EXISTS eval_run;
+DROP TABLE IF EXISTS eval_case;
+DROP TABLE IF EXISTS audit_log;
+DROP TABLE IF EXISTS qa_feedback;
+DROP TABLE IF EXISTS chat_citation;
+DROP TABLE IF EXISTS chat_message;
+DROP TABLE IF EXISTS chat_session;
+DROP TABLE IF EXISTS kb_index_task;
+DROP TABLE IF EXISTS kb_chunk;
+DROP TABLE IF EXISTS kb_document_acl;
+DROP TABLE IF EXISTS kb_document_version;
+DROP TABLE IF EXISTS kb_document;
+DROP TABLE IF EXISTS kb_space_acl;
+DROP TABLE IF EXISTS kb_space;
+DROP TABLE IF EXISTS sys_user_role;
+DROP TABLE IF EXISTS sys_user;
+DROP TABLE IF EXISTS sys_role;
+DROP TABLE IF EXISTS sys_department;
+DROP TABLE IF EXISTS sys_tenant;
