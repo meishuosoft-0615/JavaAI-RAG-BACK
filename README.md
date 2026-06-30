@@ -8,6 +8,7 @@
 - 第 2 步：Docker Compose 基础环境、MySQL 初版表结构、Elasticsearch chunk mapping、本地启动文档。
 - 第 3 步：用户登录、JWT、当前用户权限上下文。
 - 第 4 步：知识库空间创建、可见列表、状态管理和空间 ACL。
+- Swagger：已接入 Springdoc OpenAPI，文档地址 `/swagger-ui.html`、`/v3/api-docs`，登录、注销和文档路径均免 token。当前 Spring Boot 3.3.x 固定使用 springdoc 2.6.x，避免 Spring 6.1/6.2 兼容问题。
 - 注释规范：数据库表/字段、核心 Java 类/字段默认使用中文注释，规范见 [docs/development/commenting-guidelines.md](docs/development/commenting-guidelines.md)。
 
 ## 技术栈

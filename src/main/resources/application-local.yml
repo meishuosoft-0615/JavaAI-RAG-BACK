@@ -1,19 +1,19 @@
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://${MYSQL_HOST:localhost}:${MYSQL_PORT:3306}/${MYSQL_DATABASE:enterprise_rag}?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai&useSSL=false&allowPublicKeyRetrieval=true
+    url: jdbc:mysql://${MYSQL_HOST:gzxt-mklfz.mysql.rds.aliyuncs.com}:${MYSQL_PORT:3306}/${MYSQL_DATABASE:enterprise_rag}?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai&useSSL=false&allowPublicKeyRetrieval=true
     username: ${MYSQL_USERNAME:root}
-    password: ${MYSQL_PASSWORD:root}
+    password: ${MYSQL_PASSWORD:Hi@952580481}
   data:
     redis:
-      host: ${REDIS_HOST:localhost}
+      host: ${REDIS_HOST:39.106.128.8}
       port: ${REDIS_PORT:6379}
-      password: ${REDIS_PASSWORD:}
-      database: ${REDIS_DATABASE:0}
+      password: ${REDIS_PASSWORD:Hi@756428794}
+      database: ${REDIS_DATABASE:1}
 
 rag:
   elasticsearch:
-    uris: ${ELASTICSEARCH_URIS:http://localhost:9200}
+    uris: ${ELASTICSEARCH_URIS:http://39.106.128.8:9200}
     username: ${ELASTICSEARCH_USERNAME:}
     password: ${ELASTICSEARCH_PASSWORD:}
   llm:

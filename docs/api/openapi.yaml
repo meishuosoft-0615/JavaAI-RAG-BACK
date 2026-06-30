@@ -33,6 +33,14 @@ paths:
       responses:
         "200":
           description: 登录成功，返回 Bearer token
+  /api/auth/logout:
+    post:
+      summary: 用户注销
+      tags:
+        - Auth
+      responses:
+        "200":
+          description: 注销成功，前端应删除本地 accessToken
   /api/auth/me:
     get:
       summary: 查询当前用户上下文

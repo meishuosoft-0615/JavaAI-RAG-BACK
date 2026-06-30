@@ -80,6 +80,20 @@ curl http://localhost:8080/api/health
 curl.exe -X POST "http://localhost:8080/api/auth/login" -H "Content-Type: application/json" -d "{\"tenantCode\":\"demo\",\"username\":\"admin\",\"password\":\"admin123\"}"
 ```
 
+注销验证：
+
+```powershell
+curl.exe -X POST "http://localhost:8080/api/auth/logout"
+```
+
+Swagger / OpenAPI 文档地址：
+
+```text
+Swagger UI:   http://localhost:8080/swagger-ui.html
+OpenAPI JSON: http://localhost:8080/v3/api-docs
+OpenAPI YAML: http://localhost:8080/v3/api-docs.yaml
+```
+
 创建知识库空间：
 
 ```powershell

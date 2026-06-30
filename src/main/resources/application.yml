@@ -26,6 +26,19 @@ management:
       probes:
         enabled: true
 
+# Swagger / OpenAPI 文档配置。
+# Swagger UI: http://localhost:8080/swagger-ui.html
+# OpenAPI JSON: http://localhost:8080/v3/api-docs
+springdoc:
+  api-docs:
+    enabled: true
+    path: /v3/api-docs
+  swagger-ui:
+    enabled: true
+    path: /swagger-ui.html
+    operations-sorter: alpha
+    tags-sorter: alpha
+
 mybatis-plus:
   mapper-locations: classpath*:/mapper/**/*.xml
   configuration:
