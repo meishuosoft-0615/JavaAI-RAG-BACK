@@ -75,7 +75,7 @@ public class AuthController {
             @AuthenticationPrincipal CurrentUser currentUser,
             HttpServletRequest request
     ) {
-        return ApiResponse.ok(CurrentUserResponse.from(currentUser), requestId(request));
+        return ApiResponse.ok(authService.currentUser(currentUser), requestId(request));
     }
 
     private String requestId(HttpServletRequest request) {

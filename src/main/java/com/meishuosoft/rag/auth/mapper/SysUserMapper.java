@@ -28,4 +28,13 @@ public interface SysUserMapper {
             + "WHERE tenant_id = #{tenantId} "
             + "AND id = #{userId}")
     int updateLastLoginAt(@Param("tenantId") Long tenantId, @Param("userId") Long userId);
+
+    /** 判断指定用户是否仍为启用状态，用于 token 已签发后的二次校验。 */
+    @Select("SELECT COUNT(1) "
+            + "FROM sys_user "
+            + "WHERE tenant_id = #{tenantId} "
+            + "AND id = #{userId} "
+            + "AND status = 'ENABLED' "
+            + "AND deleted = 0")
+    long countEnabledById(@Param("tenantId") Long tenantId, @Param("userId") Long userId);
 }

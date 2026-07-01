@@ -35,19 +35,22 @@ public class AuthService {
     private final SysUserRoleMapper userRoleMapper;
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenProvider jwtTokenProvider;
+    private final PermissionService permissionService;
 
     public AuthService(
             SysTenantMapper tenantMapper,
             SysUserMapper userMapper,
             SysUserRoleMapper userRoleMapper,
             PasswordEncoder passwordEncoder,
-            JwtTokenProvider jwtTokenProvider
+            JwtTokenProvider jwtTokenProvider,
+            PermissionService permissionService
     ) {
         this.tenantMapper = tenantMapper;
         this.userMapper = userMapper;
         this.userRoleMapper = userRoleMapper;
         this.passwordEncoder = passwordEncoder;
         this.jwtTokenProvider = jwtTokenProvider;
+        this.permissionService = permissionService;
     }
 
     /**
@@ -86,7 +89,27 @@ public class AuthService {
                 "Bearer",
                 token.getToken(),
                 token.getExpiresAt(),
-                CurrentUserResponse.from(currentUser)
+                CurrentUserResponse.from(currentUser, permissionService.listUserPermissions(currentUser))
         );
+    }
+
+    /**
+     * 查询当前用户上下文和最新系统功能权限。
+     *
+     * <p>JWT 中的角色上下文只用于定位用户和资源权限，权限码必须实时从数据库聚合，
+     * 以便角色权限调整后刷新当前用户信息即可生效。</p>
+     */
+    public CurrentUserResponse currentUser(CurrentUser currentUser) {
+        requireEnabledUser(currentUser);
+        return CurrentUserResponse.from(currentUser, permissionService.listUserPermissions(currentUser));
+    }
+
+    private void requireEnabledUser(CurrentUser currentUser) {
+        if (currentUser == null || currentUser.getTenantId() == null || currentUser.getUserId() == null) {
+            throw new BusinessException(ErrorCode.UNAUTHORIZED, "Unauthorized");
+        }
+        if (userMapper.countEnabledById(currentUser.getTenantId(), currentUser.getUserId()) <= 0) {
+            throw new BusinessException(ErrorCode.UNAUTHORIZED, "Unauthorized");
+        }
     }
 }

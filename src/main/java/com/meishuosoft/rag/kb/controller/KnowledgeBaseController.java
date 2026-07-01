@@ -1,6 +1,7 @@
 package com.meishuosoft.rag.kb.controller;
 
 import com.meishuosoft.rag.auth.model.CurrentUser;
+import com.meishuosoft.rag.auth.security.RequirePermission;
 import com.meishuosoft.rag.common.api.ApiResponse;
 import com.meishuosoft.rag.common.api.PageResult;
 import com.meishuosoft.rag.common.web.RequestIdFilter;
@@ -45,6 +46,7 @@ public class KnowledgeBaseController {
     }
 
     @PostMapping
+    @RequirePermission("kb:manage")
     public ApiResponse<SpaceResponse> createSpace(
             @AuthenticationPrincipal CurrentUser currentUser,
             @Valid @RequestBody CreateSpaceRequest request,
@@ -67,6 +69,15 @@ public class KnowledgeBaseController {
         );
     }
 
+    @GetMapping("/available")
+    public ApiResponse<List<SpaceResponse>> listAvailableSpaces(
+            @AuthenticationPrincipal CurrentUser currentUser,
+            HttpServletRequest httpRequest
+    ) {
+        PageResult<SpaceResponse> page = knowledgeBaseService.listVisibleSpaces(currentUser, null, 1, 100);
+        return ApiResponse.ok(page.getItems(), requestId(httpRequest));
+    }
+
     @GetMapping("/{spaceId}")
     public ApiResponse<SpaceResponse> getSpace(
             @AuthenticationPrincipal CurrentUser currentUser,
@@ -77,6 +88,7 @@ public class KnowledgeBaseController {
     }
 
     @PatchMapping("/{spaceId}/status")
+    @RequirePermission("kb:manage")
     public ApiResponse<SpaceResponse> updateStatus(
             @AuthenticationPrincipal CurrentUser currentUser,
             @PathVariable Long spaceId,
@@ -87,6 +99,7 @@ public class KnowledgeBaseController {
     }
 
     @GetMapping("/{spaceId}/acl")
+    @RequirePermission("kb:manage")
     public ApiResponse<List<SpaceAclResponse>> listAcl(
             @AuthenticationPrincipal CurrentUser currentUser,
             @PathVariable Long spaceId,
@@ -96,6 +109,7 @@ public class KnowledgeBaseController {
     }
 
     @PutMapping("/{spaceId}/acl")
+    @RequirePermission("kb:manage")
     public ApiResponse<List<SpaceAclResponse>> replaceAcl(
             @AuthenticationPrincipal CurrentUser currentUser,
             @PathVariable Long spaceId,
